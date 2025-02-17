@@ -1,3 +1,5 @@
+http://localhost:3000/api/appointments?page=1&limit=3&{status}&{status}&{treatment}&{date}
+
 1. appointment post (customer panel)
 
 2. appointmet get ->(admin panel) .skip(page size).limit((5,10,15,20,table.length))//

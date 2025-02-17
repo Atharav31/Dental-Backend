@@ -19,7 +19,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled"],
+      enum: ["pending", "confirmed", "cancelled"], // status can be pending, confirmed, or cancelled
       default: "pending",
     },
     date: {
@@ -55,6 +55,11 @@ const appointmentSchema = new mongoose.Schema(
       type: String,
       trim: true,
       maxlength: 200,
+    },
+    prescriptionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Prescription",
+      default: null,
     },
   },
   { timestamps: true }
