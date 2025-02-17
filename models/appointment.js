@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 const appointmentSchema = new mongoose.Schema(
   {
@@ -9,31 +10,41 @@ const appointmentSchema = new mongoose.Schema(
       minlength: 2,
       maxlength: 50,
     },
+    phoneNo: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 10,
+      maxlength: 10,
+    },
     status: {
       type: String,
       enum: ["pending", "confirmed", "cancelled"],
       default: "pending",
     },
     date: {
-      type: Date,
+      type: String,
       required: true,
       validate: {
         validator: function (value) {
-          return value >= new Date().setHours(0, 0, 0, 0); // Ensures date is today or later
+          return (
+            moment(value, "DD/MM/YYYY", true).isValid() &&
+            moment(value, "DD/MM/YYYY").isSameOrAfter(moment().startOf("day"))
+          );
         },
-        message: "Date must be today or in the future.",
+        message:
+          "Date must be in 'DD/MM/YYYY' format and today or in the future.",
       },
     },
     time: {
       type: String,
       required: true,
-    },
-    doctorName: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 2,
-      maxlength: 50,
+      validate: {
+        validator: function (value) {
+          return /^([01]?[0-9]|2[0-3])$/.test(value);
+        },
+        message: "Time must be in 'HH' format (24-hour clock).",
+      },
     },
     treatment: {
       type: String,
@@ -50,6 +61,6 @@ const appointmentSchema = new mongoose.Schema(
 );
 
 // Adding indexes for better query performance
-appointmentSchema.index({ date: 1, time: 1 });
+appointmentSchema.index({ date: 1, time: 1 }); // as no unique value here
 
 module.exports = mongoose.model("Appointment", appointmentSchema);
