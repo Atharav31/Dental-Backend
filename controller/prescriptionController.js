@@ -48,13 +48,31 @@ exports.prescription = async (req, res) => {
 
 exports.getPrescriptionByAppointmentId = async (req, res) => {
   try {
-    const { appointmentId } = req.params;
-    const prescription = await Prescription.findById(appointmentId);
+    const { appointmentId } = req.query;
+    console.log(appointmentId);
+    const prescription = await Prescription.find({ appointmentId });
+
+    res.status(200).json(prescription);
   } catch (error) {
     console.error(
       "Error getting prescription by appointment id:",
       error.message
     );
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.updatePrescription = async (req, res) => {
+  try {
+    const { prescriptionId } = req.params;
+    const updatedPrescription = await Prescription.findByIdAndUpdate(
+      prescriptionId,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json(updatedPrescription);
+  } catch (error) {
+    console.error("Error updating prescription:", error.message);
     res.status(500).json({ message: "Server Error" });
   }
 };

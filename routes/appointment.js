@@ -5,12 +5,12 @@ const {
   createAppointment,
   prescription,
   getAppointment,
+  updateStatus,
 } = require("../controller/appointmentsController");
 
-// Create a new appointment
 
 appointmentRouter.post("/appointments", createAppointment);
 appointmentRouter.get("/appointments", getAppointment);
+appointmentRouter.put("/appointments", updateStatus);
 
 module.exports = appointmentRouter;
-// Get all appointments

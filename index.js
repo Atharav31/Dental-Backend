@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 ///////////////////////////////////////////////////APIs///////////////////////////////////////////////
-app.use("/api", appointmentRouter);
-app.use("/api", prescriptionRouter);
+app.use("/api/v1", appointmentRouter);
+app.use("/api/v1", prescriptionRouter);
 
 app.listen(3000, () => console.log("Server started on port 3000"));

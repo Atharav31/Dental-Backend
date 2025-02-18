@@ -60,7 +60,7 @@ exports.getAppointment = async (req, res) => {
         "prescriptionId",
         "medicines instructions proceduresPerformed allergies followUpRequired nextVisit additionalNotes"
       )
-      .sort({ date: 1, time: 1 })
+      .sort({ date: -1, time: -1 })
       .skip(skip)
       .limit(limitNumber);
 
@@ -80,3 +80,41 @@ exports.getAppointment = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+// confirm cancel of multiple/Single appointments
+exports.updateStatus = async (req, res) => {
+  try {
+    const { status, appointmentIds } = req.body;
+    const allowedStatus = ["pending", "confirmed", "cancelled"];
+
+    if (!allowedStatus.includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    if (!Array.isArray(appointmentIds) || appointmentIds.length === 0) {
+      return res.status(400).json({ message: "appointmentIds must be a non-empty array" });
+    }
+
+    const uniqueAppointmentIds = [...new Set(appointmentIds)]; 
+
+    const appointments = await appointment.find({ _id: { $in: uniqueAppointmentIds } });
+
+    if (appointments.length !== uniqueAppointmentIds.length) {
+      return res.status(404).json({ message: "One or more appointments not found" });
+    }
+
+    const updatedAppointments = await Promise.all(
+      appointments.map(async (appt) => {
+        appt.status = status;
+        return appt.save();
+      })
+    );
+
+    res.status(200).json({ message: "Statuses updated successfully",count:updatedAppointments.length, data: updatedAppointments });
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
