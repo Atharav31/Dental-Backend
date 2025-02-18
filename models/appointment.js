@@ -15,7 +15,7 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
       trim: true,
       minlength: 10,
-      maxlength: 10,
+      maxlength: 13,
     },
     status: {
       type: String,

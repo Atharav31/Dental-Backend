@@ -1,6 +1,8 @@
 const appointment = require("../models/appointment");
 const Prescription = require("../models/Prescription");
 const User = require("../models/User");
+const { appointmentCreatedMessage } = require("../Templates/smsTemplates");
+const { sendSMS } = require("../Utility/smsUtility");
 
 exports.createAppointment = async (req, res) => {
   try {
@@ -19,6 +21,7 @@ exports.createAppointment = async (req, res) => {
 
     await appointmentForPatient.save();
     //TODO: send sms to patient
+    sendSMS(phoneNo,appointmentCreatedMessage(appointmentForPatient));
     res.status(201).json(appointmentForPatient);
   } catch (err) {
     console.error(err.message);
