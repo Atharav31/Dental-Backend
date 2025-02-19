@@ -31,7 +31,7 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAppointment = async (req, res) => {
   try {
-    const { date, treatment, status, page = 1, limit = 1 ,phoneNo} = req.query;
+    const { date, treatment, status, page = 1, limit = 1 ,phoneNo,time} = req.query;
 
     let filter = {};
 
@@ -46,6 +46,9 @@ exports.getAppointment = async (req, res) => {
     }
     if (phoneNo) {
       filter.phoneNo = phoneNo;
+    }
+    if (time) {
+      filter.time = time;
     }
 
     // Convert page & limit to numbers
