@@ -34,7 +34,7 @@ exports.dashboardData = async (req, res) => {
     ).length;
 
     res.status(200).json({
-      totalAppointments,
+      totalAppointments, // total apo
       completedAppointments,
       pendingAppointments,
       dailyPatients,

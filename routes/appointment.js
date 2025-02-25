@@ -6,10 +6,12 @@ const {
   prescription,
   getAppointment,
   updateStatus,
+  updateAppointment,
 } = require("../controller/appointmentsController");
 
 appointmentRouter.post("/appointments", createAppointment);
 appointmentRouter.get("/appointments", getAppointment);
+appointmentRouter.get("/appointments/:id", updateAppointment);
 
 appointmentRouter.put("/appointments", updateStatus);
 
