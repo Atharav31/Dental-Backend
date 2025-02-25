@@ -4,6 +4,7 @@ const appointmentRouter = require("./routes/appointment.js");
 const prescriptionRouter = require("./routes/prescription.js");
 const app = express();
 const morgan = require("morgan");
+const dashboardRouter = require("./routes/dashboard.js");
 require("dotenv").config();
 require("./config/db.js");
 
@@ -22,5 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", appointmentRouter);
 app.use("/api/v1", prescriptionRouter);
+app.use("/api/v1", dashboardRouter);
 
 app.listen(3000, () => console.log("Server started on port 3000"));
