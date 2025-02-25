@@ -19,7 +19,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled"], // status can be pending, confirmed, or cancelled
+      enum: ["pending", "confirmed", "cancelled","completed"], // status can be pending, confirmed, or cancelled
       default: "pending",
     },
     date: {
@@ -69,3 +69,6 @@ const appointmentSchema = new mongoose.Schema(
 appointmentSchema.index({ date: 1, time: 1 }); // as no unique value here
 
 module.exports = mongoose.model("Appointment", appointmentSchema);
+
+
+
