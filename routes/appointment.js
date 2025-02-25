@@ -8,9 +8,9 @@ const {
   updateStatus,
 } = require("../controller/appointmentsController");
 
-
 appointmentRouter.post("/appointments", createAppointment);
 appointmentRouter.get("/appointments", getAppointment);
+
 appointmentRouter.put("/appointments", updateStatus);
 
 module.exports = appointmentRouter;

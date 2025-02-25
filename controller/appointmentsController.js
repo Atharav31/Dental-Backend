@@ -21,7 +21,7 @@ exports.createAppointment = async (req, res) => {
 
     await appointmentForPatient.save();
     //TODO: send sms to patient
-    sendSMS(phoneNo,appointmentCreatedMessage(appointmentForPatient));
+    // sendSMS(phoneNo, appointmentCreatedMessage(appointmentForPatient));
     res.status(201).json(appointmentForPatient);
   } catch (err) {
     console.error(err.message);
@@ -31,7 +31,16 @@ exports.createAppointment = async (req, res) => {
 
 exports.getAppointment = async (req, res) => {
   try {
-    const { date, treatment, status, page = 1, limit = 1 ,phoneNo,time} = req.query;
+    const {
+      date,
+      treatment,
+      status,
+      page = 1,
+      limit = 1,
+      phoneNo,
+      time,
+      id,
+    } = req.query;
 
     let filter = {};
 
@@ -50,6 +59,9 @@ exports.getAppointment = async (req, res) => {
     if (time) {
       filter.time = time;
     }
+    if (id) {
+      filter._id = id;
+    }
 
     // Convert page & limit to numbers
     const pageNumber = parseInt(page, 10);
@@ -63,7 +75,7 @@ exports.getAppointment = async (req, res) => {
         "prescriptionId",
         "medicines instructions proceduresPerformed allergies followUpRequired nextVisit additionalNotes"
       )
-      .sort({ date: -1, time: -1 })
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limitNumber);
 
@@ -84,25 +96,32 @@ exports.getAppointment = async (req, res) => {
   }
 };
 // confirm cancel of multiple/Single appointments
+
 exports.updateStatus = async (req, res) => {
   try {
     const { status, appointmentIds } = req.body;
-    const allowedStatus = ["pending", "confirmed", "cancelled"];
+    const allowedStatus = ["pending", "confirmed", "cancelled", "completed"];
 
     if (!allowedStatus.includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
     if (!Array.isArray(appointmentIds) || appointmentIds.length === 0) {
-      return res.status(400).json({ message: "appointmentIds must be a non-empty array" });
+      return res
+        .status(400)
+        .json({ message: "appointmentIds must be a non-empty array" });
     }
 
-    const uniqueAppointmentIds = [...new Set(appointmentIds)]; 
+    const uniqueAppointmentIds = [...new Set(appointmentIds)];
 
-    const appointments = await appointment.find({ _id: { $in: uniqueAppointmentIds } });
+    const appointments = await appointment.find({
+      _id: { $in: uniqueAppointmentIds },
+    });
 
     if (appointments.length !== uniqueAppointmentIds.length) {
-      return res.status(404).json({ message: "One or more appointments not found" });
+      return res
+        .status(404)
+        .json({ message: "One or more appointments not found" });
     }
 
     const updatedAppointments = await Promise.all(
@@ -112,12 +131,41 @@ exports.updateStatus = async (req, res) => {
       })
     );
 
-    res.status(200).json({ message: "Statuses updated successfully",count:updatedAppointments.length, data: updatedAppointments });
-
+    res.status(200).json({
+      message: "Statuses updated successfully",
+      count: updatedAppointments.length,
+      data: updatedAppointments,
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server Error" });
   }
 };
+exports.updateAppointment = async (req, res) => {
+  try {
+    const { id } = req.params; // Get appointment ID from request params
+    const updateData = req.body; // Data to update
 
+    // Find and update the appointment
+    const updatedAppointment = await appointment.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true }
+    );
 
+    if (!updatedAppointment) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Appointment not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment updated successfully",
+      data: updatedAppointment,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
