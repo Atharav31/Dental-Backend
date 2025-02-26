@@ -5,6 +5,7 @@ const {
   createAppointment,
   prescription,
   getAppointment,
+  // getAppointmentById,
   updateStatus,
   updateAppointment,
 } = require("../controller/appointmentsController");

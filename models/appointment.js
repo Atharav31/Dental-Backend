@@ -69,3 +69,5 @@ const appointmentSchema = new mongoose.Schema(
 appointmentSchema.index({ date: 1, time: 1 }); // as no unique value here
 
 module.exports = mongoose.model("Appointment", appointmentSchema);
+
+

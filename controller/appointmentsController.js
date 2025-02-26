@@ -95,6 +95,43 @@ exports.getAppointment = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+// exports.getAppointmentById = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+    
+//     const appointmentDetails = await appointment.findById(id)
+//       .populate(
+//         "prescriptionId",
+//         "medicines instructions proceduresPerformed allergies followUpRequired nextVisit additionalNotes"
+//       );
+    
+//     if (!appointmentDetails) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Appointment not found"
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       data: appointmentDetails
+//     });
+//   } catch (err) {
+//     console.error(err.message);
+//     // Handle invalid MongoDB ID format
+//     if (err.kind === 'ObjectId') {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid appointment ID format"
+//       });
+//     }
+//     res.status(500).json({ 
+//       success: false,
+//       message: "Server Error" 
+//     });
+//   }
+// };
 // confirm cancel of multiple/Single appointments
 
 exports.updateStatus = async (req, res) => {
