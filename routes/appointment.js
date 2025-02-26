@@ -11,7 +11,7 @@ const {
 
 appointmentRouter.post("/appointments", createAppointment);
 appointmentRouter.get("/appointments", getAppointment);
-appointmentRouter.get("/appointments/:id", updateAppointment);
+appointmentRouter.put("/appointments/:id", updateAppointment);
 
 appointmentRouter.put("/appointments", updateStatus);
 
