@@ -56,6 +56,17 @@ const appointmentSchema = new mongoose.Schema(
       trim: true,
       maxlength: 200,
     },
+    gender: {
+      type: String,
+      required: true,
+      enum: ["male", "female", "others"],
+    },
+    age: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 120,
+    },
     prescriptionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Prescription",
