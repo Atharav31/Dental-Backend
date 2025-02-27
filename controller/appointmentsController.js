@@ -32,7 +32,8 @@ exports.createAppointment = async (req, res) => {
 exports.getAppointment = async (req, res) => {
   try {
     const {
-      date,
+      startDate,
+      endDate,
       treatment,
       status,
       page = 1,
@@ -44,9 +45,14 @@ exports.getAppointment = async (req, res) => {
 
     let filter = {};
 
-    if (date) {
-      filter.date = date;
+    if (startDate && endDate) {
+      filter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    } else if (startDate) {
+      filter.date = { $gte: new Date(startDate) };
+    } else if (endDate) {
+      filter.date = { $lte: new Date(endDate) };
     }
+
     if (treatment) {
       filter.treatment = treatment;
     }
@@ -95,6 +101,7 @@ exports.getAppointment = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 // confirm cancel of multiple/Single appointments
 
 exports.updateStatus = async (req, res) => {
