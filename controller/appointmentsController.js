@@ -56,9 +56,12 @@ exports.getAppointment = async (req, res) => {
     if (treatment) {
       filter.treatment = treatment;
     }
+
     if (status) {
-      filter.status = status;
+      const statusArray = Array.isArray(status) ? status : status.split(",");
+      filter.status = { $in: statusArray };
     }
+
     if (phoneNo) {
       filter.phoneNo = phoneNo;
     }
@@ -69,12 +72,10 @@ exports.getAppointment = async (req, res) => {
       filter._id = id;
     }
 
-    // Convert page & limit to numbers
     const pageNumber = parseInt(page, 10);
     const limitNumber = parseInt(limit, 10);
     const skip = (pageNumber - 1) * limitNumber;
 
-    // Fetch appointments with filters, pagination, and sorting
     const appointments = await appointment
       .find(filter)
       .populate(
@@ -85,7 +86,6 @@ exports.getAppointment = async (req, res) => {
       .skip(skip)
       .limit(limitNumber);
 
-    // Get total count for pagination meta info
     const totalAppointments = await appointment.countDocuments(filter);
 
     res.status(200).json({
