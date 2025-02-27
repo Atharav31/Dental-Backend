@@ -7,3 +7,5 @@ prescriptionRouter.get("/prescription", getPrescriptionByAppointmentId);
 prescriptionRouter.patch("/prescription/:prescriptionId", updatePrescription);
 
 module.exports = prescriptionRouter;
+
+
