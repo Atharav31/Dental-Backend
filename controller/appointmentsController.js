@@ -7,6 +7,7 @@ const { sendSMS } = require("../Utility/smsUtility");
 exports.createAppointment = async (req, res) => {
   try {
     const appointmentForPatient = new appointment(req.body);
+
     const { phoneNo } = req.body;
 
     let user = await User.findOne({ phoneNo });
@@ -20,6 +21,7 @@ exports.createAppointment = async (req, res) => {
     }
 
     await appointmentForPatient.save();
+
     //TODO: send sms to patient
     // sendSMS(phoneNo, appointmentCreatedMessage(appointmentForPatient));
     res.status(201).json(appointmentForPatient);
