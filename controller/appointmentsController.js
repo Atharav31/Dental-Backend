@@ -16,13 +16,13 @@ exports.createAppointment = async (req, res) => {
       user = new User({ phoneNo, appointments: [appointmentForPatient._id] });
       await user.save();
     } else {
-      user.appointments.push(appointmentForPatient._id); //TODO:pop it on cancel appointment
+      user.appointments.push(appointmentForPatient._id);
       await user.save();
     }
 
     await appointmentForPatient.save();
-    //TODO: send sms to patient
-    // sendSMS(`+91${phoneNo}`, appointmentCreatedMessage(appointmentForPatient));
+
+    sendSMS(`+91${phoneNo}`, appointmentCreatedMessage(appointmentForPatient));
     res.status(201).json(appointmentForPatient);
   } catch (err) {
     console.error(err.message);
@@ -180,20 +180,23 @@ exports.updateAppointment = async (req, res) => {
 
 exports.getUserAppointments = async (req, res) => {
   try {
-    const { phoneNo ,otp} = req.query;
-    const phoneString=phoneNo.toString();
-    if(!otp){
+    const { phoneNo, otp } = req.query;
+    const phoneString = phoneNo.toString();
+    if (!otp) {
       sendOtp(`+91${phoneString}`);
-      res.status(200).json({message:"OTP sent successfully",success:true});
-    }
-    else{
-      const verification=await verifyOtp(`+91${phoneString}`,otp);
-      if(verification==='pending'|| !verification){
+      res.status(200).json({ message: "OTP sent successfully", success: true });
+    } else {
+      const verification = await verifyOtp(`+91${phoneString}`, otp);
+      if (verification === "pending" || !verification) {
         throw new Error("Invalid OTP");
         //  res.status(400).json({message:"Invalid OTP",success:false});
       }
       const appointments = await appointment.find({ phoneNo });
-      res.status(200).json({message:'OTP verified successfully',data:appointments,success:true});
+      res.status(200).json({
+        message: "OTP verified successfully",
+        data: appointments,
+        success: true,
+      });
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
