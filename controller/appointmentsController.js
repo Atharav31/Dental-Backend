@@ -2,6 +2,7 @@ const appointment = require("../models/appointment");
 const Prescription = require("../models/Prescription");
 const User = require("../models/User");
 const { appointmentCreatedMessage } = require("../Templates/smsTemplates");
+const { sendOtp, verifyOtp } = require("../Utility/OtpVerification");
 const { sendSMS } = require("../Utility/smsUtility");
 
 exports.createAppointment = async (req, res) => {
@@ -21,7 +22,7 @@ exports.createAppointment = async (req, res) => {
 
     await appointmentForPatient.save();
     //TODO: send sms to patient
-    // sendSMS(phoneNo, appointmentCreatedMessage(appointmentForPatient));
+    // sendSMS(`+91${phoneNo}`, appointmentCreatedMessage(appointmentForPatient));
     res.status(201).json(appointmentForPatient);
   } catch (err) {
     console.error(err.message);
@@ -171,6 +172,25 @@ exports.updateAppointment = async (req, res) => {
       message: "Appointment updated successfully",
       data: updatedAppointment,
     });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.getUserAppointments = async (req, res) => {
+  try {
+    const { phoneNo ,otp} = req.query;
+    const phoneString=phoneNo.toString();
+    if(!otp){
+      sendOtp(`+91${phoneString}`);
+      res.status(200).json({message:"OTP sent successfully",success:true});
+    }
+    else{
+      verifyOtp(`+91${phoneString}`,otp);
+      const appointments = await appointment.find({ phoneNo });
+      res.status(200).json({message:'OTP verified successfully',data:appointments,success:true});
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "Server Error" });
