@@ -187,12 +187,15 @@ exports.getUserAppointments = async (req, res) => {
       res.status(200).json({message:"OTP sent successfully",success:true});
     }
     else{
-      verifyOtp(`+91${phoneString}`,otp);
+      const verification=await verifyOtp(`+91${phoneString}`,otp);
+      if(verification==='pending'|| !verification){
+        throw new Error("Invalid OTP");
+        //  res.status(400).json({message:"Invalid OTP",success:false});
+      }
       const appointments = await appointment.find({ phoneNo });
       res.status(200).json({message:'OTP verified successfully',data:appointments,success:true});
     }
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: err.message });
   }
 };

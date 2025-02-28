@@ -20,6 +20,7 @@ async function verifyOtp(phoneNumber, otpCode) {
             .verificationChecks.create({ to: phoneNumber, code: otpCode });
 
         console.log('OTP verification status:', verificationCheck.status);
+        return verificationCheck.status;
     } catch (error) {
         console.error('Error verifying OTP:', error.message);
     }
