@@ -48,7 +48,20 @@ const appointmentSchema = new mongoose.Schema(
     },
     treatment: {
       type: String,
-      enum: ["oral", "dental", "orthodontic", "orthopedic"],
+      enum: [
+        "root_canal",
+        "crown",
+        "cosmetic_procedure",
+        "filling",
+        "dental_implant",
+        "teeth_replacement",
+        "extraction",
+        "mouth_guard",
+        "child_procedure",
+        "gum_care",
+        "orthodontic",
+        "x_ray",
+      ],      
       required: true,
     },
     description: {
