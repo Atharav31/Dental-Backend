@@ -85,6 +85,12 @@ const appointmentSchema = new mongoose.Schema(
       ref: "Prescription",
       default: null,
     },
+    reportIds: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Report",
+      },
+    ],
   },
   { timestamps: true }
 );
