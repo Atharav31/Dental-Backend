@@ -16,5 +16,7 @@ COPY . .
 # Expose the port the app runs on
 EXPOSE 3000
 
+RUN npm run build
+
 # Command to run the application whatever  is written with cmd means yeh container run krega
 CMD ["node", "index.js"]
