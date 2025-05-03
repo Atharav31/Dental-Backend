@@ -16,7 +16,6 @@ const prescriptionSchema = new mongoose.Schema({
   ],
   instructions: {
     type: [String],
-    required: true,
   },
   proceduresPerformed: [
     {
