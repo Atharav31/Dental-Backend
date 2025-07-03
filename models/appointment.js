@@ -25,16 +25,16 @@ const appointmentSchema = new mongoose.Schema(
     date: {
       type: String,
       required: true,
-      validate: {
-        validator: function (value) {
-          return (
-            moment(value, "DD/MM/YYYY", true).isValid() &&
-            moment(value, "DD/MM/YYYY").isSameOrAfter(moment().startOf("day"))
-          );
-        },
-        message:
-          "Date must be in 'DD/MM/YYYY' format and today or in the future.",
-      },
+      // validate: {
+      //   validator: function (value) {
+      //     return (
+      //       moment(value, "DD/MM/YYYY", true).isValid() &&
+      //       moment(value, "DD/MM/YYYY").isSameOrAfter(moment().startOf("day"))
+      //     );
+      //   },
+      //   message:
+      //     "Date must be in 'DD/MM/YYYY' format and today or in the future.",
+      // },
     },
     time: {
       type: String,

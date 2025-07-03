@@ -2,9 +2,12 @@ const appointment = require("../models/appointment");
 const Prescription = require("../models/Prescription");
 
 exports.prescription = async (req, res) => {
+  console.log(req.body)
   try {
     const {
       appointmentId,
+      diagnosis,
+      symtoms,
       medicines,
       instructions,
       proceduresPerformed,
@@ -14,15 +17,18 @@ exports.prescription = async (req, res) => {
       additionalNotes,
     } = req.body;
 
-    const appointmentToAddPrescription = await appointment.findById(
-      appointmentId
-    );
+    console.log(appointmentId, diagnosis, symtoms);
+
+    const appointmentToAddPrescription = await appointment.findById(appointmentId);
 
     if (!appointmentToAddPrescription) {
       throw new Error("Appointment not found");
     }
+
     const prescription = new Prescription({
       appointmentId,
+      diagnosis,
+      symtoms,
       medicines,
       instructions,
       proceduresPerformed,
@@ -33,8 +39,6 @@ exports.prescription = async (req, res) => {
     });
 
     const savedPrescription = await prescription.save();
-
-    //now saving prescription to appointment
 
     appointmentToAddPrescription.prescriptionId = savedPrescription._id;
     await appointmentToAddPrescription.save();
