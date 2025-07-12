@@ -15,8 +15,6 @@ app.use(
   })
 );
 
-
-
 //middlewares
 app.use(morgan("dev"));
 app.use(express.json());
@@ -25,28 +23,33 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1", appointmentRouter);
 app.use("/api/v1", prescriptionRouter);
 app.use("/api/v1", dashboardRouter);
-app.post('/api/v1/ml/predict', async (req, res) => {
+app.post("/api/v1/ml/predict", async (req, res) => {
   try {
     // You can adjust this if you want to send more fields (e.g., symptoms, allergies)
     const inputData = req.body; // e.g., { diagnosis: "Cavity" }
-    const response = await axios.post('http://localhost:5000/predict', inputData);
+    const response = await axios.post(
+      "http://localhost:5000/predict",
+      inputData
+    );
     res.json(response.data);
   } catch (error) {
     console.error("ML API Error:", error.message);
-    res.status(500).json({ error: 'Prediction failed' });
+    res.status(500).json({ error: "Prediction failed" });
   }
 });
-app.post('/api/v1/ml/olama-diagnosis', async (req, res) => {
+app.post("/api/v1/ml/olama-diagnosis", async (req, res) => {
   try {
     const inputData = req.body; // e.g., { symptoms: "bleeding gums, tooth pain" }
-    console.log("Input Data:", inputData); 
-    const response = await axios.post('http://localhost:5000/olama_diagnosis', inputData);
+    console.log("Input Data:", inputData);
+    const response = await axios.post(
+      "http://localhost:5000/olama_diagnosis",
+      inputData
+    );
     res.json(response?.data);
   } catch (error) {
     console.error("Ollama API Error:", error.message);
-    res.status(500).json({ error: 'Ollama diagnosis failed' });
+    res.status(500).json({ error: "Ollama diagnosis failed" });
   }
 });
-
 
 app.listen(3000, () => console.log("Server started on port 3000"));

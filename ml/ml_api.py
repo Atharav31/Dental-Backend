@@ -39,13 +39,21 @@ def olama_diagnosis():
         "prompt": prompt,
         "stream": False
     }
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
     try:
-        response = requests.post(OLLAMA_URL, json=payload)
+        response = requests.post(OLLAMA_URL, json=payload, headers=headers)
+        print("Ollama response status:", response.status_code)
+        print("Ollama response body:", response.text)
         response.raise_for_status()
         result = response.json()
         diagnosis = result.get('response', '').strip()
         return jsonify({'diagnosis': diagnosis})
     except Exception as e:
+        print("Error calling Ollama:", str(e))
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

@@ -13,7 +13,6 @@ http://localhost:3000/api/appointments?page=1&limit=3&{status}&{status}&{treatme
 6. update about the status change for user..
 7.
 
-
-
 frontend = public ip
 backend-3000
+source venv/bin/activate
