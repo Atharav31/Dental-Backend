@@ -8,11 +8,11 @@ const dashboardRouter = require("./routes/dashboard.js");
 require("dotenv").config();
 require("./config/db.js");
 
-app.use(
-  cors({
-    origin: "http://localhost:3001",
-  })
-);
+// app.use(
+//   cors({
+//     origin: "http://localhost:3001",
+//   })
+// );
 
 app.use(cors());
 
