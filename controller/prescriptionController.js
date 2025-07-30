@@ -14,7 +14,7 @@ exports.prescription = async (req, res) => {
 			additionalNotes,
 			treatments,
 		} = req.body;
-		console.log(req.body);
+		
 		const appointmentToAddPrescription = await appointment.findById(
 			appointmentId
 		);

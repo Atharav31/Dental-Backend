@@ -68,6 +68,11 @@ const appointmentSchema = new mongoose.Schema(
 			ref: "Prescription",
 			default: null,
 		},
+		billID: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Bill",
+			default: null,
+		},
 	},
 	{ timestamps: true }
 );

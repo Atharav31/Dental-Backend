@@ -6,6 +6,7 @@ const { sendSMS } = require("../Utility/smsUtility");
 
 exports.createAppointment = async (req, res) => {
 	try {
+		console.log(req.body);
 		const appointmentForPatient = new appointment(req.body);
 
 		const { phoneNo } = req.body;
@@ -78,15 +79,22 @@ exports.getAppointment = async (req, res) => {
 		const limitNumber = parseInt(limit, 10);
 		const skip = (pageNumber - 1) * limitNumber;
 
-		const appointments = await appointment
-			.find(filter)
-			.populate(
-				"prescriptionId",
-				"medicines instructions proceduresPerformed allergies followUpRequired nextVisit additionalNotes treatments"
-			)
-			.sort({ createdAt: -1 })
-			.skip(skip)
-			.limit(limitNumber);
+const appointments = await appointment
+    .find(filter)
+    .populate([
+        {
+            path: "prescriptionId",
+            select: "medicines instructions proceduresPerformed allergies followUpRequired nextVisit additionalNotes treatments"
+        },
+        {
+            path: "billID",
+            select: "amount dueDate status"
+        }
+    ])
+    .sort({ createdAt: -1 })   // <-- Corrected parentheses
+    .skip(skip)
+    .limit(limitNumber);
+
 
 		const totalAppointments = await appointment.countDocuments(filter);
 

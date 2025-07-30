@@ -49,6 +49,7 @@ exports.createBill = async (req, res) => {
     });
 
     const isAppointmentExists = await Bill.findOne({ appointmentId });
+    const appointmentToUpdate = await appointment.findById(appointmentId);
     if (isAppointmentExists) {
       return res.status(400).json({
         message: "Bill for this appointment already exists.",
@@ -59,6 +60,15 @@ exports.createBill = async (req, res) => {
     }
 
     await newBill.save();
+      await appointment.updateOne(
+          { _id: appointmentToUpdate },
+          {
+            $set: {
+              billID: newBill._id,
+              
+            },
+          }
+        );
     res.status(201).json(newBill);
   } catch (err) {
     console.error(err.message);

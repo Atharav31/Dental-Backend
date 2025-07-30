@@ -7,11 +7,7 @@ const billSchema = new Schema(
       ref: "Appointment",
       required: true,
     },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+  
     amount: {
       type: Number,
       required: true,
