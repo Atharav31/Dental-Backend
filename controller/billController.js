@@ -35,12 +35,14 @@ exports.createBill = async (req, res) => {
     paymentMethod,
     isPaid,
     notes,
+    items,
   } = req.body;
 
   try {
     const newBill = new Bill({
       appointmentId,
       amount,
+      items,
       isBaseAdded,
       discount,
       paymentMethod,
@@ -48,9 +50,10 @@ exports.createBill = async (req, res) => {
       notes,
     });
 
-    const isAppointmentExists = await Bill.findOne({ appointmentId });
+    const isAppointmentExists = await Bill.find({ appointmentId });
+    console.log(isAppointmentExists);
     const appointmentToUpdate = await appointment.findById(appointmentId);
-    if (isAppointmentExists) {
+    if (isAppointmentExists.length > 0) {
       return res.status(400).json({
         message: "Bill for this appointment already exists.",
       });
@@ -60,15 +63,14 @@ exports.createBill = async (req, res) => {
     }
 
     await newBill.save();
-      await appointment.updateOne(
-          { _id: appointmentToUpdate },
-          {
-            $set: {
-              billID: newBill._id,
-              
-            },
-          }
-        );
+    await appointment.updateOne(
+      { _id: appointmentToUpdate },
+      {
+        $set: {
+          billID: newBill._id,
+        },
+      }
+    );
     res.status(201).json(newBill);
   } catch (err) {
     console.error(err.message);
@@ -77,7 +79,7 @@ exports.createBill = async (req, res) => {
 };
 
 exports.updateBill = async (req, res) => {
-  const { amount, isBaseAdded, discount, paymentMethod, isPaid, notes } =
+  const { amount, isBaseAdded, discount, paymentMethod, isPaid, notes, items } =
     req.body;
   const { billId } = req.params;
   try {
@@ -93,6 +95,7 @@ exports.updateBill = async (req, res) => {
         paymentMethod,
         isPaid,
         notes,
+        items,
       },
       { new: true, runValidators: true }
     );

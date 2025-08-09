@@ -7,7 +7,7 @@ const billSchema = new Schema(
       ref: "Appointment",
       required: true,
     },
-  
+
     amount: {
       type: Number,
       required: true,
@@ -25,6 +25,18 @@ const billSchema = new Schema(
       enum: ["cash", "card", "upi", "insurance"],
       required: true,
     },
+    items: [
+      {
+        amount: {
+          type: Number,
+          required: true,
+        },
+        description: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     isPaid: {
       type: Boolean,
       default: false,
