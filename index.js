@@ -9,6 +9,8 @@ const bill = require("./routes/bill.js");
 require("dotenv").config();
 require("./config/db.js");
 const PORT = process.env.PORT || 3000;
+// uncomment the line below to enable cron job for appointment reminders
+// require("./Utility/reminderCron.js");
 
 // app.use(
 //   cors({

@@ -1,7 +1,10 @@
 const appointment = require("../models/appointment");
 const Prescription = require("../models/Prescription");
 const User = require("../models/User");
-const { appointmentCreatedMessage } = require("../Templates/smsTemplates");
+const {
+	appointmentCreatedMessage,
+	updateStatusMessage,
+} = require("../Templates/smsTemplates");
 const { sendOtp, verifyOtp } = require("../Utility/OtpVerification");
 const { sendSMS } = require("../Utility/smsUtility");
 
@@ -25,7 +28,7 @@ exports.createAppointment = async (req, res) => {
 		await appointmentForPatient.save();
 
 		//TODO: send sms to patient
-		// sendSMS(phoneNo, appointmentCreatedMessage(appointmentForPatient));
+		sendSMS(phoneNo, appointmentCreatedMessage(appointmentForPatient));
 		res.status(201).json(appointmentForPatient);
 	} catch (err) {
 		console.error(err.message);
@@ -148,6 +151,17 @@ exports.updateStatus = async (req, res) => {
 				return appt.save();
 			})
 		);
+
+		if (updatedAppointments.length !== appointments.length) {
+			return res
+				.status(500)
+				.json({ message: "Failed to update some appointments" });
+		}
+
+		//TODO: send sms to patient
+		updatedAppointments.forEach((appt) => {
+			sendSMS(appt.phoneNo, updateStatusMessage(appt));
+		});
 
 		res.status(200).json({
 			message: "Statuses updated successfully",
