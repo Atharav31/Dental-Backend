@@ -8,6 +8,7 @@ const dashboardRouter = require("./routes/dashboard.js");
 const bill = require("./routes/bill.js");
 require("dotenv").config();
 require("./config/db.js");
+const PORT = process.env.PORT || 3000;
 
 // app.use(
 //   cors({
@@ -27,4 +28,4 @@ app.use("/api/v1", prescriptionRouter);
 app.use("/api/v1", dashboardRouter);
 app.use("/api/v1/bill", bill);
 
-app.listen(3000, () => console.log("Server started on port 3000"));
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
