@@ -1,4 +1,4 @@
-const axios = require("axios");
+const Review = require("../models/GoogleReview");
 
 // exports.googleReview = async (req, res) => {
 //   const placeId = "ChIJHy61w924wjsRrcnLR19k75w";
