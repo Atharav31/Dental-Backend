@@ -6,11 +6,13 @@ const app = express();
 const morgan = require("morgan");
 const dashboardRouter = require("./routes/dashboard.js");
 const bill = require("./routes/bill.js");
+const googleReviewRouter = require("./routes/googleReview.js");
 require("dotenv").config();
 require("./config/db.js");
 const PORT = process.env.PORT || 3000;
 // uncomment the line below to enable cron job for appointment reminders
 // require("./Utility/reminderCron.js");
+require("./Utility/cron.js");
 
 // app.use(
 //   cors({
@@ -29,5 +31,6 @@ app.use("/api/v1", appointmentRouter);
 app.use("/api/v1", prescriptionRouter);
 app.use("/api/v1", dashboardRouter);
 app.use("/api/v1/bill", bill);
+app.use("/api/v1/googleReview", googleReviewRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
