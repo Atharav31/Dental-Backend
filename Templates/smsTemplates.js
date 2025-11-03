@@ -16,7 +16,7 @@ ${
 }Please arrive at least 10 minutes before your scheduled time.
 
 Best regards,  
-Dr. Martande's Dental Clinic  
+Dr. 32 Pearl's Dental Clinic  
 Contact: 098903 53072  
 Location: https://g.co/kgs/Qu3TDDe`;
 };

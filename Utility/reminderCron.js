@@ -1,12 +1,11 @@
 const cron = require("node-cron");
 const Appointment = require("../models/appointment");
-const { sendSMS } = require("./smsUtility");
-
 const moment = require("moment");
+const { sendWhatsApp } = require("./sendWhatsApp");
 const {
-	reminderMessageToday,
-	reminderMessageTomorrow,
-} = require("../Templates/smsTemplates");
+	reminderTomorrowTemplate,
+	reminderTodayTemplate,
+} = require("../Templates/whatsappTemplates");
 
 // Reminder for TOMORROW's appointments (send at 9:00 AM today)
 cron.schedule("0 9 * * *", async () => {
@@ -17,9 +16,7 @@ cron.schedule("0 9 * * *", async () => {
 	const appointments = await db.getAppointmentsByDate(tomorrow);
 
 	for (const appt of appointments) {
-		const msg = reminderMessageTomorrow(appt);
-		console.log(msg, "msg");
-		// await sendSMS(appt.phoneNumber, msg);
+		const msg = await sendWhatsApp(reminderTomorrowTemplate(appt));
 		console.log(`Reminder for tomorrow sent to ${appt.patientName}`);
 	}
 });
@@ -33,8 +30,7 @@ cron.schedule("0 8 * * *", async () => {
 	const appointments = await db.getAppointmentsByDate(today);
 
 	for (const appt of appointments) {
-		const msg = reminderMessageToday(appt);
-		// await sendSMS(appt.phoneNumber, msg);
+		const msg = await sendWhatsApp(reminderTodayTemplate(appt));
 		console.log(msg);
 		console.log(` Reminder for today sent to ${appt.patientName}`);
 	}

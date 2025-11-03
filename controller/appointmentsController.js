@@ -6,7 +6,15 @@ const {
 	updateStatusMessage,
 } = require("../Templates/smsTemplates");
 const { sendOtp, verifyOtp } = require("../Utility/OtpVerification");
+const { sendWhatsApp } = require("../Utility/sendWhatsApp");
 const { sendSMS } = require("../Utility/smsUtility");
+const {
+	appointmentCreatedTemplate,
+	appointmentStatusUpdatedTemplate,
+	reminderTodayTemplate,
+	reminderTomorrowTemplate,
+	appointmentCancelledTemplate,
+} = require("../Templates/whatsappTemplates");
 
 exports.createAppointment = async (req, res) => {
 	try {
@@ -21,14 +29,19 @@ exports.createAppointment = async (req, res) => {
 			user = new User({ phoneNo, appointments: [appointmentForPatient._id] });
 			await user.save();
 		} else {
-			user.appointments.push(appointmentForPatient._id); //TODO:pop it on cancel appointment
+			user.appointments.push(appointmentForPatient._id);
 			await user.save();
 		}
 
 		await appointmentForPatient.save();
 
-		//TODO: send sms to patient
-		sendSMS(phoneNo, appointmentCreatedMessage(appointmentForPatient));
+		// Send WhatsApp message
+		try {
+			await sendWhatsApp(appointmentCreatedTemplate(appointmentForPatient));
+		} catch (error) {
+			console.error("Error sending WhatsApp message:", error.message);
+		}
+
 		res.status(201).json(appointmentForPatient);
 	} catch (err) {
 		console.error(err.message);
@@ -145,6 +158,7 @@ exports.updateStatus = async (req, res) => {
 				.json({ message: "One or more appointments not found" });
 		}
 
+		// update status
 		const updatedAppointments = await Promise.all(
 			appointments.map(async (appt) => {
 				appt.status = status;
@@ -158,10 +172,17 @@ exports.updateStatus = async (req, res) => {
 				.json({ message: "Failed to update some appointments" });
 		}
 
-		//TODO: send sms to patient
-		updatedAppointments.forEach((appt) => {
-			sendSMS(appt.phoneNo, updateStatusMessage(appt));
-		});
+		// ✅ send WhatsApp message to each updated patient
+		await Promise.all(
+			updatedAppointments.map((appt) => {
+				const template =
+					status === "cancelled"
+						? appointmentCancelledTemplate(appt)
+						: appointmentStatusUpdatedTemplate(appt);
+
+				return sendWhatsApp(template);
+			})
+		);
 
 		res.status(200).json({
 			message: "Statuses updated successfully",
@@ -173,6 +194,7 @@ exports.updateStatus = async (req, res) => {
 		res.status(500).json({ message: "Server Error" });
 	}
 };
+
 exports.updateAppointment = async (req, res) => {
 	try {
 		const { id } = req.params; // Get appointment ID from request params
